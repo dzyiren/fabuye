@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="永久地址发布页">
+        <meta name="keywords" content="最新地址发布页">
+        <meta name="author" content="永久地址发布页">
+        <title>永久最新地址发布页</title>
+        <link rel="icon" href="image.webp" type="image/x-icon">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                color: #333;
+                text-align: center;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 1% auto;
+                padding: 20px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                color: #e74c3c;
+            }
+
+            p {
+                font-size: 1.2em;
+            }
+
+            a {
+                color: #3498db;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            .ping-info {
+                margin-top: 20px;
+                font-size: 1em;
+                color: #555;
+            }
+
+            .ping-result {
+                margin-top: 10px;
+            }
+
+            .very-fast {
+                color: #2ecc71;
+                /* 绿色，表示非常快 */
+            }
+
+            .fast {
+                color: #f39c12;
+                /* 橙色，表示快 */
+            }
+
+            .normal {
+                color: #e74c3c;
+                /* 红色，表示较慢 */
+            }
+
+            .slow {
+                color: #7f8c8d;
+                /* 灰色，表示慢 */
+            }
+        </style>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>永久地址发布页</h1>
+            <p>亲爱的用户，这是我们永久地址发布页。避免丢失，建议您截图：</p>
+            <div id="domains"></div>
+            <div class="ping-info">
+                <p>为了方便您了解访问速度，我们已经提供了自动Ping测试结果：</p>
+            </div>
+            <p>感谢您的理解和支持！</p>
+        </div>
+        <script type="text/javascript">
+            const domains = [{
+                url: 'https://伺鵪r.mi576lan.cyou/刡p',
+                name: '点击直达'
+            }, {
+                url: 'https://jpe梠.dse8keily.cyou/月粺',
+                name: '点击直达'
+            }, {
+                url: 'https://doufuru888.cyou',
+                name: '点击直达'
+            }, {
+                url: 'https://doufuru.vip',
+                name: 'doufuru.vip'
+            }, {
+                url: 'https://doufuruvip.com',
+                name: 'doufuruvip.com'
+            }, {
+                url: 'https://doufuru666.com',
+                name: 'doufuru666.com'
+            }, {
+                url: 'https://wangjidizhi.com',
+                name: 'wangjidizhi.com（好记）'
+            }, {
+                url: 'https://dizhidaquan.com',
+                name: 'dizhidaquan.com（好记）'
+            }, {
+                url: 'https://bing.com',
+                name: '必应搜索'
+            }, {
+                url: 'https://baidu.com',
+                name: '百度搜索'
+            }, {
+                url: 'https://google.com',
+                name: '谷歌搜索'
+            }, {
+                url: 'https://sougou.com',
+                name: '搜狗搜索'
+            }, // 在这里添加更多域名
+            ];
+
+            function pingServer(url, callback) {
+                const start = new Date().getTime();
+                const img = new Image();
+                img.onload = img.onerror = function() {
+                    const end = new Date().getTime();
+                    const time = end - start;
+                    callback(time);
+                }
+                ;
+                // 使用一个非常小的图片文件来减少请求时间
+                img.src = url + '/favicon.ico?rand=' + Math.random();
+                // 使用网站图标
+            }
+
+            $(document).ready(function() {
+                const domainsContainer = $('#domains');
+                const results = [];
+
+                domains.forEach(function(domain) {
+                    const domainElement = $(`<p><a href="${domain.url}" target="_blank">${domain.name}</a> <span class="ping-result">测速中...</span></p>`);
+                    domainsContainer.append(domainElement);
+
+                    const pingResultElement = domainElement.find('.ping-result');
+                    pingServer(domain.url, function(time) {
+                        results.push({
+                            url: domain.url,
+                            time: time
+                        });
+
+                        // 如果所有测速结果都返回了
+                        if (results.length === domains.length) {
+                            // 计算最小值、最大值和中位值
+                            results.sort( (a, b) => a.time - b.time);
+                            const minTime = results[0].time;
+                            const maxTime = results[results.length - 1].time;
+                            const medianTime = results[Math.floor(results.length / 2)].time;
+
+                            // 为每个测速结果分配颜色
+                            results.forEach(result => {
+                                const timeInSeconds = (result.time / 1000).toFixed(2);
+                                let speedClass;
+
+                                if (result.time <= minTime + (medianTime - minTime) * 0.5) {
+                                    speedClass = 'very-fast';
+                                    // 非常快
+                                } else if (result.time <= medianTime) {
+                                    speedClass = 'fast';
+                                    // 快
+                                } else {
+                                    speedClass = 'normal';
+                                    // 较慢
+                                }
+
+                                // 更新测速结果文本和颜色
+                                domainsContainer.find(`a[href="${result.url}"]`).next('.ping-result').text(`（${timeInSeconds}秒）`).removeClass('very-fast fast normal slow').addClass(speedClass);
+                            }
+                            );
+                        }
+                    });
+                });
+            });
+        </script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GKT344ZTMH"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-GKT344ZTMH');
+        </script>
+    </body>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ST04W5Y5NQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-ST04W5Y5NQ');
+    </script>
+</html>
